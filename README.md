@@ -24,6 +24,7 @@ It allows you to develop in an isolated environment, outside of the core Isaac L
     ```bash
     # use 'PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
     python -m pip install -e source/frankaIsaaclab
+    ```
 
 - Verify that the extension is correctly installed by:
 
@@ -60,6 +61,102 @@ It allows you to develop in an isolated environment, outside of the core Isaac L
             # use 'FULL_PATH_TO_isaaclab.sh|bat -p' instead of 'python' if Isaac Lab is not installed in Python venv or conda
             python scripts/random_agent.py --task=<TASK_NAME>
             ```
+
+## Available Tasks
+
+This project includes three robotic manipulation tasks using the Franka Emika Panda robot:
+
+### 1. Reach Task
+
+The robot learns to move its end-effector to reach a randomly positioned target point in 3D space.
+
+**Available Environments:**
+- `Template-Reach-v0`: Training environment
+- `Template-Reach-Play-v0`: Inference/play environment
+
+**Training:**
+```bash
+python scripts/skrl/train.py --task=Template-Reach-v0
+```
+
+**Testing with trained model:**
+```bash
+python scripts/skrl/play.py --task=Template-Reach-Play-v0 --checkpoint=<path_to_checkpoint>/best_agent.pt
+```
+
+**Testing with random actions:**
+```bash
+python scripts/random_agent.py --task=Template-Reach-v0 --num_envs=4
+```
+
+### 2. Lift Task
+
+The robot learns to grasp a cube and lift it to a target height above the table.
+
+**Available Environments:**
+- `Template-Lift-v0`: Training environment
+- `Template-Lift-Play-v0`: Inference/play environment
+
+**Training:**
+```bash
+python scripts/skrl/train.py --task=Template-Lift-v0
+```
+
+**Testing with trained model:**
+```bash
+python scripts/skrl/play.py --task=Template-Lift-Play-v0 --checkpoint=<path_to_checkpoint>/best_agent.pt
+```
+
+**Testing with random actions:**
+```bash
+python scripts/random_agent.py --task=Template-Lift-v0 --num_envs=4
+```
+
+### 3. Stack Task
+
+The robot learns to stack cubes on top of each other. Two variants are available:
+
+**Available Environments:**
+- `Template-Stack-v0`: Standard stacking task
+- `Template-Stack-2Cubes-v0`: Simplified 2-cube stacking task (easier to train)
+
+**Training (2-cube variant):**
+```bash
+python scripts/skrl/train.py --task=Template-Stack-2Cubes-v0
+```
+
+**Testing with trained model:**
+```bash
+python scripts/skrl/play.py --task=Template-Stack-2Cubes-v0 --checkpoint=<path_to_checkpoint>/best_agent.pt --num_envs=4
+```
+
+**Training (standard variant):**
+```bash
+python scripts/skrl/train.py --task=Template-Stack-v0
+```
+
+### General Options
+
+All tasks support the following common options:
+
+- `--num_envs`: Number of parallel environments to run (default varies by task)
+- `--checkpoint`: Path to a trained checkpoint for inference/play mode
+- `--headless`: Run without GUI for faster training
+
+**Example with options:**
+```bash
+python scripts/skrl/train.py --task=Template-Reach-v0 --num_envs=64 --headless
+```
+
+### Monitoring Training
+
+You can monitor training progress using TensorBoard:
+
+```bash
+tensorboard --logdir logs
+```
+
+Training logs are saved in the `logs/skrl/` directory with timestamps.
 
 ### Set up IDE (Optional)
 
